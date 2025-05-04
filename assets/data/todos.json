@@ -1,0 +1,14 @@
+[
+  {
+    "title": "Buy groceries",
+    "description": "Milk, Eggs, Bread",
+    "isDone": false,
+    "createdAt": "2025-05-01T10:00:00Z"
+  },
+  {
+    "title": "Walk the dog",
+    "description": null,
+    "isDone": true,
+    "createdAt": "2025-05-02T08:30:00Z"
+  }
+]

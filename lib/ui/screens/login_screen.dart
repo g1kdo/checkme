@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart'; // Import the HomeScreen
+import 'home_screen.dart';
+import 'package:checkme/services/user_service.dart';
+import 'package:checkme/models/user.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -42,31 +44,39 @@ class _LoginScreenState extends State<LoginScreen> {
     return null;
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       // Simulating login logic (use the actual authentication service here)
-      String email = _emailController.text;
+      String email = _emailController.text.trim();
       String password = _passwordController.text;
 
-      // For simulation, we assume a successful login if the email and password are not empty
-      if (email.isNotEmpty && password.isNotEmpty) {
-        // Navigate to HomeScreen and pass the email as username (simulating the user)
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomeScreen(
-              userName: email, // Using email as the username for this simulation
-              userAvatar: "assets/avatar.jpg", // Path to the avatar image
-            ),
-          ),
-        );
-      } else {
+      User? user = await UserService.findUser(email, password);
+
+      if (user !=null && email == user.email && password == user.password){
+        _navigateToHome(user.email, user.avatar);
+      }else if(user ==null){
+        final newUser = User(email: email, password: password);
+        await UserService.addUser(newUser);
+        _navigateToHome(user!.email, user.avatar);
+      }else {
         // Show a failed login message
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Invalid login credentials')),
         );
       }
     }
+  }
+
+  void _navigateToHome(String email, String avatar) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomeScreen(
+          userName: email,
+          userAvatar: avatar,
+        ),
+      ),
+    );
   }
 
   @override
