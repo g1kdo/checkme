@@ -1,27 +1,64 @@
-import 'package:checkme/ui/screens/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:checkme/ui/screens/login_screen.dart';
+import 'package:checkme/services/todo_notifier.dart';
+import 'package:checkme/models/todo.dart';
 
-void main() {
-  runApp(const CheckMeApp());
+// Define a state notifier to manage theme state
+class ThemeNotifier extends StateNotifier<ThemeMode> {
+  ThemeNotifier() : super(ThemeMode.system);
+
+  // Method to toggle the theme
+  void toggleTheme() {
+    state = state == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+  }
+
+  // Method to set the theme based on system preference
+  void setSystemTheme() {
+    state = ThemeMode.system;
+  }
 }
 
-class CheckMeApp extends StatelessWidget {
+// Define the global provider for theme state
+final themeProvider = StateNotifierProvider<ThemeNotifier, ThemeMode>((ref) {
+  return ThemeNotifier();
+});
+
+final todoProvider = StateNotifierProvider<TodoNotifier, List<Todo>>((ref) {
+  return TodoNotifier();
+});
+
+
+void main() {
+  runApp(
+    ProviderScope(
+      child: CheckMeApp(),
+    ),
+  );
+}
+
+
+class CheckMeApp extends ConsumerWidget {
   const CheckMeApp({super.key});
 
-  // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Get the current theme mode from Riverpod provider
+    final currentTheme = ref.watch(themeProvider);
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         useMaterial3: true,
       ),
+      darkTheme: ThemeData.dark(), // Define dark theme
+      themeMode: currentTheme, // Apply the current theme mode
       home: const LoginScreen(),
     );
   }
 }
+
 
 // class MyHomePage extends StatefulWidget {
 //   const MyHomePage({super.key, required this.title});

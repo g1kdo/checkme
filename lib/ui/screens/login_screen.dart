@@ -46,26 +46,34 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      // Simulating login logic (use the actual authentication service here)
       String email = _emailController.text.trim();
-      String password = _passwordController.text;
+      String password = _passwordController.text.trim();
 
-      User? user = await UserService.findUser(email, password);
+      // Check if a user with this email exists
+      User? existingUser = await UserService.findUserByEmail(email);
 
-      if (user !=null && email == user.email && password == user.password){
-        _navigateToHome(user.email, user.avatar);
-      }else if(user ==null){
-        final newUser = User(email: email, password: password);
-        await UserService.addUser(newUser);
-        _navigateToHome(user!.email, user.avatar);
-      }else {
-        // Show a failed login message
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Invalid login credentials')),
+      if (existingUser != null) {
+        // Email exists: check password
+        if (existingUser.password == password) {
+          _navigateToHome(existingUser.email, existingUser.avatar);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Incorrect password.')),
+          );
+        }
+      } else {
+        // Email doesn't exist: create new user
+        final newUser = User(
+          email: email,
+          password: password,
+          avatar: "assets/avatar1.jpg", // or randomize avatar
         );
+        await UserService.addUser(newUser);
+        _navigateToHome(newUser.email, newUser.avatar);
       }
     }
   }
+
 
   void _navigateToHome(String email, String avatar) {
     Navigator.pushReplacement(

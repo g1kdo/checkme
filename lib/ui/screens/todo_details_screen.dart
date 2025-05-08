@@ -1,120 +1,104 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Import the intl package
 import 'package:checkme/models/todo.dart';
+import 'package:checkme/services/todo_service.dart';
 
-class TodoDetailsScreen extends StatefulWidget {
+class TodoDetailsScreen extends StatelessWidget {
   final Todo todo;
-  final Function(Todo) onUpdateTodo; // Function to handle updating the todo
+  final Function(Todo) onUpdateTodo;
 
   const TodoDetailsScreen({
     super.key,
     required this.todo,
-    required this.onUpdateTodo, // Initialize the update function
+    required this.onUpdateTodo,
   });
 
   @override
-  _TodoDetailsScreenState createState() => _TodoDetailsScreenState();
-}
-
-class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
-  late TextEditingController _titleController;
-  late TextEditingController _descriptionController;
-
-  @override
-  void initState() {
-    super.initState();
-    _titleController = TextEditingController(text: widget.todo.title);
-    _descriptionController = TextEditingController(text: widget.todo.description);
-  }
-
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _descriptionController.dispose();
-    super.dispose();
-  }
-
-  // Show the Edit Todo dialog
-  void _showEditDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Edit Todo'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _titleController,
-                decoration: const InputDecoration(hintText: 'Enter todo title'),
-              ),
-              TextField(
-                controller: _descriptionController,
-                decoration: const InputDecoration(hintText: 'Enter description (optional)'),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                if (_titleController.text.isNotEmpty) {
-                  widget.onUpdateTodo(
-                    Todo(
-                      title: _titleController.text,
-                      description: _descriptionController.text.isEmpty
-                          ? null
-                          : _descriptionController.text,
-                      createdAt: widget.todo.createdAt,
-                    ),
-                  );
-                  Navigator.pop(context);
-                  Navigator.pop(context); // Go back to HomeScreen after editing
-                }
-              },
-              child: const Text('Save'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final titleController = TextEditingController(text: todo.title);
+    final descriptionController = TextEditingController(text: todo.description ?? '');
+    DateTime? selectedDueDate = todo.dueDate;
+    String selectedCategory = todo.category;
+
+    void _saveTodo() async {
+      final updatedTodo = todo.copyWith(
+        title: titleController.text,
+        description: descriptionController.text,
+        dueDate: selectedDueDate,
+        category: selectedCategory,
+      );
+      await TodoService.updateTodo(updatedTodo);
+      onUpdateTodo(updatedTodo);
+      Navigator.pop(context); // Return to home screen
+    }
+
+    void _selectDueDate() async {
+      final pickedDate = await showDatePicker(
+        context: context,
+        initialDate: selectedDueDate ?? DateTime.now(),
+        firstDate: DateTime(2020),
+        lastDate: DateTime(2100),
+      );
+      if (pickedDate != null && pickedDate != selectedDueDate) {
+        selectedDueDate = pickedDate;
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Todo Details'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: _showEditDialog, // Show the edit dialog on press
+            icon: const Icon(Icons.save),
+            onPressed: _saveTodo,
           ),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              widget.todo.title,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            TextField(
+              controller: titleController,
+              decoration: const InputDecoration(labelText: 'Title'),
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Created at: ${DateFormat('yyyy-MM-dd HH:mm').format(widget.todo.createdAt)}',
-              style: const TextStyle(fontSize: 16),
+            TextField(
+              controller: descriptionController,
+              decoration: const InputDecoration(labelText: 'Description'),
             ),
-            const SizedBox(height: 16),
-            if (widget.todo.description != null && widget.todo.description!.isNotEmpty)
-              Text(
-                'Description: ${widget.todo.description}',
-                style: const TextStyle(fontSize: 16),
+            const SizedBox(height: 20),
+            GestureDetector(
+              onTap: _selectDueDate,
+              child: Row(
+                children: [
+                  Icon(Icons.calendar_today),
+                  const SizedBox(width: 8),
+                  Text(selectedDueDate == null
+                      ? 'Select Due Date'
+                      : 'Due: ${selectedDueDate!.toLocal()}'),
+                ],
               ),
+            ),
+            const SizedBox(height: 20),
+            DropdownButton<String>(
+              value: selectedCategory,
+              onChanged: (newCategory) {
+                if (newCategory != null) {
+                  selectedCategory = newCategory;
+                }
+              },
+              items: <String>['General', 'School', 'Personal', 'Urgent']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _saveTodo,
+              child: const Text('Save'),
+            ),
           ],
         ),
       ),

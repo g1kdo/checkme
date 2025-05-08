@@ -30,9 +30,22 @@ class UserService {
     await file.writeAsString(jsonString);
   }
 
+  // static Future<File> _getLocalFile() async {
+  //   final dir = await getApplicationDocumentsDirectory();
+  //   return File('${dir.path}/$_filename');
+  // }
+
   static Future<File> _getLocalFile() async {
     final dir = await getApplicationDocumentsDirectory();
-    return File('${dir.path}/$_filename');
+    final file = File('${dir.path}/$_filename');
+    print('🗂️ User data file: ${file.path}');
+    return file;
+  }
+
+
+  static Future<User?> findUserByEmail(String email) async {
+    List<User> users = await loadUsers();
+    return users.firstWhereOrNull((u) => u.email == email);
   }
 
   static Future<User?> findUser(String email, String password) async {
