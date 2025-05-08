@@ -20,6 +20,11 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  DateTime? selectedDueDate;
+  String selectedCategory = 'All';
+  String searchQuery = '';
+  String selectedStatus = 'All'; // Added task status filter (All, Pending, Completed)
+
   @override
   void initState() {
     super.initState();
@@ -29,14 +34,36 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
   }
 
+  // Search logic
+  List<Todo> _filterTodos(List<Todo> todos) {
+    List<Todo> filteredTodos = todos.where((todo) {
+      final query = searchQuery.toLowerCase();
+      return todo.title.toLowerCase().contains(query) ||
+          (todo.description?.toLowerCase().contains(query) ?? false);
+    }).toList();
+
+    // Filter by selected category
+    if (selectedCategory != 'All') {
+      filteredTodos = filteredTodos.where((todo) {
+        return todo.category == selectedCategory;
+      }).toList();
+    }
+
+    // Filter by selected status (All, Pending, Completed)
+    if (selectedStatus != 'All') {
+      final isCompleted = selectedStatus == 'Completed';
+      filteredTodos = filteredTodos.where((todo) {
+        return todo.isDone == isCompleted;
+      }).toList();
+    }
+
+    return filteredTodos;
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeNotifier = ref.watch(themeProvider.notifier);
     final currentTheme = ref.watch(themeProvider);
-
-    DateTime? selectedDueDate;
-    String selectedCategory = 'General';
-    String searchQuery = '';
 
     // Add a new todo with a due date and category
     void _addTodo(String title, String? description, DateTime? dueDate, String category) async {
@@ -48,15 +75,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         category: category,
       );
       await ref.read(todoProvider.notifier).addTodo(newTodo);
-    }
-
-    // Search logic
-    List<Todo> _filterTodos(List<Todo> todos) {
-      return todos.where((todo) {
-        final query = searchQuery.toLowerCase();
-        return todo.title.toLowerCase().contains(query) ||
-            (todo.description?.toLowerCase().contains(query) ?? false);
-      }).toList();
     }
 
     // Show Add Todo dialog
@@ -113,7 +131,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       selectedCategory = newCategory;
                     }
                   },
-                  items: <String>['General', 'School', 'Personal', 'Urgent']
+                  items: <String>['General', 'School', 'Personal', 'Urgent', 'All']
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -171,15 +189,71 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ],
             ),
             const SizedBox(height: 20),
+            // Search bar
+            TextField(
+              decoration: const InputDecoration(
+                labelText: 'Search Todos',
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  searchQuery = value;
+                });
+              },
+            ),
+            const SizedBox(height: 16),
+            // Filters for category and status
+            Row(
+              children: [
+                DropdownButton<String>(
+                  value: selectedCategory,
+                  onChanged: (newCategory) {
+                    if (newCategory != null) {
+                      setState(() {
+                        selectedCategory = newCategory;
+                      });
+                    }
+                  },
+                  items: <String>['General', 'School', 'Personal', 'Urgent', 'All']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(width: 16),
+                DropdownButton<String>(
+                  value: selectedStatus,
+                  onChanged: (newStatus) {
+                    if (newStatus != null) {
+                      setState(() {
+                        selectedStatus = newStatus;
+                      });
+                    }
+                  },
+                  items: <String>['All', 'Pending', 'Completed']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // Displaying filtered todos
             Expanded(
               child: Consumer(
                 builder: (context, watch, _) {
                   final todos = ref.watch(todoProvider);
+                  final filteredTodos = _filterTodos(todos);
 
                   return ListView.builder(
-                    itemCount: _filterTodos(todos).length,
+                    itemCount: filteredTodos.length,
                     itemBuilder: (context, index) {
-                      final todo = _filterTodos(todos)[index];
+                      final todo = filteredTodos[index];
 
                       // Show "Overdue" if the due date has passed
                       String overdueLabel = '';
