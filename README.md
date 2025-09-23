@@ -55,10 +55,29 @@ A fully functional, modern todo application built with Flutter, featuring SQLite
 
 **Ready to use APK available for direct installation:**
 
-- **📦 Release APK**: `app-release.apk` (49.4 MB)
+- **📦 Latest Release**: [Download v1.0 APK](https://github.com/g1kdo/checkme/releases/latest) (49.4 MB)
 - **🔧 Debug APK**: `app-debug.apk` (64.5 MB) - for development/testing
 
-**Download Location**: `build/app/outputs/flutter-apk/`
+**Download Options**:
+- **GitHub Releases**: [Latest Release](https://github.com/g1kdo/checkme/releases/latest)
+- **Direct APK**: `build/app/outputs/flutter-apk/app-release.apk`
+- **All Releases**: [View All Releases](https://github.com/g1kdo/checkme/releases)
+
+### 🏷️ **Current Release: v1.0**
+
+**CheckMe v1.0** - Complete Todo Management App with SQLite and Enhanced UI
+
+**What's New in v1.0:**
+- ✅ **Smart Authentication**: Auto signup for new users, login for existing users
+- ✅ **Password Management**: Forgot password and change password features
+- ✅ **SQLite Database**: Robust local storage with user isolation
+- ✅ **Priority System**: 4-level priority with color coding
+- ✅ **Categories**: 6 predefined categories for organization
+- ✅ **Statistics Dashboard**: Progress tracking and analytics
+- ✅ **Export Features**: JSON and CSV export functionality
+- ✅ **Modern UI**: Material Design 3 with dark/light themes
+- ✅ **List/Grid Views**: Flexible viewing options
+- ✅ **Offline Support**: Works completely without internet
 
 ### 📲 **Installation Instructions**
 
@@ -394,7 +413,7 @@ Your CheckMe app is now ready for production use:
 - ✅ **Production Ready**: Optimized and tested
 
 ### 🚀 **Quick Start**
-1. **Download** the APK from `build/app/outputs/flutter-apk/app-release.apk`
+1. **Download** the APK from [GitHub Releases](https://github.com/g1kdo/checkme/releases/latest)
 2. **Install** on your Android device
 3. **Create** your account with any email
 4. **Start** managing your todos!
