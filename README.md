@@ -226,17 +226,18 @@ flutter build apk --debug
 - Due date management
 - Completion status tracking
 
-### 📸 **App Screenshots**
+## 📱 **App Screenshots Gallery**
 
-| Screenshot | Description |
-|------------|-------------|
-| <img src="images/image1.jpeg" width="100" alt="CheckMe Screenshot 1"> | Login/Signup Screen with modern authentication |
-| <img src="images/image2.jpeg" width="100" alt="CheckMe Screenshot 2"> | Dashboard with statistics and overview |
-| <img src="images/image3.jpeg" width="100" alt="CheckMe Screenshot 3"> | Todo list view with priority colors |
-| <img src="images/image4.jpeg" width="100" alt="CheckMe Screenshot 4"> | Todo grid view with categories |
-| <img src="images/image5.jpeg" width="100" alt="CheckMe Screenshot 5"> | Task details and editing interface |
-| <img src="images/image6.jpeg" width="100" alt="CheckMe Screenshot 6"> | Statistics dashboard with analytics |
-| <img src="images/image7.jpeg" width="100" alt="CheckMe Screenshot 7"> | Settings and export options |
+*Experience the CheckMe app through these real screenshots showcasing all major features and screens.*
+
+| 🔐 **Authentication & Login** | 📊 **Dashboard & Statistics** | 📋 **Todo Management** |
+|:---:|:---:|:---:|
+| <img src="images/image1.jpeg" alt="Login Screen" width="200"><br/>*Smart login/signup with modern authentication and password recovery* | <img src="images/image2.jpeg" alt="Dashboard" width="200"><br/>*Statistics overview with completion rates and progress tracking* | <img src="images/image3.jpeg" alt="Todo List View" width="200"><br/>*List view with priority colors and category organization* |
+| | | <img src="images/image4.jpeg" alt="Todo Grid View" width="200"><br/>*Grid view with flexible layout and visual task cards* |
+
+| ✏️ **Task Details & Editing** | 📈 **Analytics & Insights** | ⚙️ **Settings & Export** |
+|:---:|:---:|:---:|
+| <img src="images/image5.jpeg" alt="Task Details" width="200"><br/>*Comprehensive task editing with priority, category, and due date management* | <img src="images/image6.jpeg" alt="Statistics Dashboard" width="200"><br/>*Advanced analytics with category breakdown and priority analysis* | <img src="images/image7.jpeg" alt="Settings & Export" width="200"><br/>*Export functionality, password change, and app configuration* |
 
 ## 🛠️ Technical Details
 
