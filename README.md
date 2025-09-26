@@ -226,6 +226,18 @@ flutter build apk --debug
 - Due date management
 - Completion status tracking
 
+### 📸 **App Screenshots**
+
+| Screenshot | Description |
+|------------|-------------|
+| <img src="images/image1.jpeg" width="100" alt="CheckMe Screenshot 1"> | Login/Signup Screen with modern authentication |
+| <img src="images/image2.jpeg" width="100" alt="CheckMe Screenshot 2"> | Dashboard with statistics and overview |
+| <img src="images/image3.jpeg" width="100" alt="CheckMe Screenshot 3"> | Todo list view with priority colors |
+| <img src="images/image4.jpeg" width="100" alt="CheckMe Screenshot 4"> | Todo grid view with categories |
+| <img src="images/image5.jpeg" width="100" alt="CheckMe Screenshot 5"> | Task details and editing interface |
+| <img src="images/image6.jpeg" width="100" alt="CheckMe Screenshot 6"> | Statistics dashboard with analytics |
+| <img src="images/image7.jpeg" width="100" alt="CheckMe Screenshot 7"> | Settings and export options |
+
 ## 🛠️ Technical Details
 
 ### **Dependencies**
